@@ -4,11 +4,18 @@ A prompt-engineered AI agent that takes a CSV of business names and websites, th
 
 ## What This Agent Does
 
-1. **Verifies brand-owned retail locations** — Checks each business for physical storefronts, showrooms, or galleries that are owned and operated by the brand itself. Filters out offices, coworking spaces, residential addresses, warehouses, and third-party retailers/stockists that carry the brand's products.
-2. **Counts locations** — Determines how many distinct retail locations each business operates.
-3. **Estimates revenue** — Produces a predicted annual revenue figure based on product pricing, catalog depth, store footprint, location quality, and foot traffic signals.
-4. **Screens for Shopify Payments eligibility** — Flags businesses selling prohibited products (tobacco, nicotine, vapes, firearms, cannabis, pornography, etc.) that would be ineligible for Shopify Payments.
-5. **Exports a structured CSV** — Delivers a clean, actionable report the sales team can work from immediately.
+The agent processes business lists through a three-phase funnel, doing the least work in the most efficient order:
+
+**Phase 1 — Product Eligibility Screen** (fastest check, run on all businesses)
+Visits each website, checks what products they sell, and immediately eliminates businesses with prohibited products (tobacco, nicotine, vapes, firearms, cannabis, pornography, etc.). This is the cheapest filter and removes the most businesses upfront.
+
+**Phase 2 — Retail Location Verification** (eligible businesses only)
+For businesses that pass Phase 1, determines whether they operate brand-owned retail locations. Filters out offices, coworking spaces, residential addresses, warehouses, third-party retailers/stockists, and online-only businesses.
+
+**Phase 3 — Revenue Prediction & Ranking** (retail businesses only)
+For the narrowed list of businesses with verified retail locations, does the deep research: estimates annual revenue based on product pricing, catalog depth, store footprint, location quality, and foot traffic signals. Ranks all qualified leads by outreach priority.
+
+The final output is a single CSV containing all businesses (including eliminated ones with their elimination reason), sorted with the highest-priority qualified leads at the top.
 
 ## Files
 
@@ -40,28 +47,31 @@ Upload your CSV and instruct the agent to process it. For large lists (100+ busi
 
 ### 4. Review the Output
 
-The agent returns a CSV with these columns:
+The agent returns a CSV with these columns, sorted by outreach priority:
 
 | Column | Description |
 |---|---|
 | Business Name | From your input |
 | Web Domain | Cleaned domain |
-| Has Retail Locations | TRUE / FALSE / UNKNOWN |
-| Number of Retail Locations | Integer count |
-| Location Details | Semicolon-separated addresses |
-| Predicted Annual Revenue | Estimate with confidence level |
-| Revenue Reasoning | How the estimate was derived |
-| Eligible for Shopify Payments | Yes / No / Review Needed |
+| Eligible for Shopify Payments | Yes / No / Review Needed (Phase 1 result) |
 | Eligibility Notes | Reason if ineligible |
+| Has Retail Locations | TRUE / FALSE / UNKNOWN (Phase 2 result, blank if eliminated in Phase 1) |
+| Number of Retail Locations | Integer count (blank if eliminated in Phase 1) |
+| Location Details | Semicolon-separated addresses |
+| Predicted Annual Revenue | Estimate with confidence (only for Phase 3 qualified leads) |
+| Revenue Reasoning | How the estimate was derived (only for Phase 3 qualified leads) |
+| Outreach Priority | Rank 1-N among qualified leads (blank for eliminated businesses) |
+| Funnel Stage | Where the business exited: Phase 1/2/3 |
 
 ## Prompt Design Principles
 
 This prompt was built following current AI agent prompt engineering best practices:
 
 - **Structured sections with XML-style tags** — Role, objective, workflow, output format, rules, examples, and thinking protocol are cleanly separated for reliable parsing.
-- **Chain-of-thought reasoning** — The `<thinking_protocol>` section forces the agent to reason through each business before committing to an output, reducing hallucination and improving accuracy.
+- **Three-phase funnel architecture** — The cheapest check (product eligibility) runs first on all businesses, eliminating the most rows. Retail location verification runs only on eligible businesses. Revenue estimation (the most expensive step) runs only on businesses with verified retail locations. This minimizes wasted effort and makes the agent reliable on large lists.
+- **Chain-of-thought reasoning** — The `<thinking_protocol>` section forces the agent to reason through each business at each phase before committing to an output, reducing hallucination and improving accuracy.
 - **Explicit inclusion/exclusion criteria** — Instead of vague instructions ("find real stores"), the prompt defines precise signals for what counts as a retail location and what doesn't, including the critical distinction between brand-owned stores and third-party stockists/retailers.
-- **Concrete examples** — Four worked examples (brand-owned retail store, third-party stockist page, online-only, prohibited product) anchor the agent's understanding of expected output.
+- **Concrete examples** — Four worked examples demonstrating elimination at each funnel stage (Phase 1 prohibited product, Phase 2 stockist-only, Phase 2 online-only, Phase 3 qualified lead) anchor the agent's understanding of expected output.
 - **Guardrails and edge cases** — Rules cover inaccessible websites, approximate counts for large chains, the distinction between store hours vs. support hours, and by-appointment showrooms.
 - **Structured output schema** — A fixed CSV schema with typed columns ensures consistent, machine-readable output.
 

@@ -266,6 +266,24 @@ CONFIRMED_RETAIL = {
         'traffic_mult': 1.0,
         'notes': '1 owned showroom at 1100 S San Pedro St, LA Fashion District. Industry/trade showroom open by appointment. Fashion District = medium foot traffic.'
     },
+    'furnituredepot.ca': {
+        'locations': 2,
+        'industry': 'Furniture/Home Goods',
+        'benchmark_low': 400, 'benchmark_high': 550,
+        'sq_ft': 8000,
+        'traffic': 'High',
+        'traffic_mult': 1.5,
+        'notes': '2 owned showrooms in Mississauga ON: Heartland Town Centre (6075 Mavis Rd, open Mon-Fri 10am-9pm, Sat 10am-6pm, Sun 11am-6pm) and Dundas St W (by appointment). Heartland Town Centre is a major retail hub = high foot traffic. No stockists counted.'
+    },
+    'davidkbeavis.com': {
+        'locations': 2,
+        'industry': 'General Retail (Art Gallery)',
+        'benchmark_low': 450, 'benchmark_high': 600,
+        'sq_ft': 2000,
+        'traffic': 'High',
+        'traffic_mult': 1.5,
+        'notes': '2 owned galleries: 314 Main St, Park City UT (opened 2015) and 491 5th Ave South, Naples FL (opened 2024). Both are on premium retail corridors (Main St Park City + 5th Ave Naples). High foot traffic. No stockists counted.'
+    },
     'www.mbgourds.com': {
         'locations': 1,
         'industry': 'General Retail (Gift/Home Decor)',

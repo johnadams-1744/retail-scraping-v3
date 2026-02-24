@@ -21,12 +21,26 @@ Process the attached CSV of business names and websites. Conduct deep-web resear
     - Location is a co-working space (e.g., WeWork, Regus) or residential address.
     - MANDATORY: Exclude "Stockists" or "Retail Partners." Only count locations owned/operated by the brand or dedicated brand showrooms.
     - Products sold are banned from Stripe (e.g., nicotine products, cannabis products that include THC, vape devices, kratom, etc.)
+    - The Shopify store is a virtual/online-only sales portal for a parent brand (e.g., an "Online Factory Sale" or "Virtual Market" storefront). These are NOT physical locations even if the parent brand has showrooms elsewhere. Only count locations that belong to THIS specific Shopify store entity.
 - INCLUSION CRITERIA: Confirm as retail if:
     - Ground floor presence is visible or highly implied.
     - "Store Hours" or "Gallery Hours" are listed for public browsing/walk-ins.
     - Address is in a known retail corridor (e.g., Broadway, High St, Fashion District, Main St, 5th Avenue, Rodeo Drive).
     - Business operates an art gallery, studio with public hours, showroom, tasting room, farm store, or any other physical space where consumers can browse and purchase in person.
     - "By appointment" showrooms still count IF the business owns/operates the space and it is a dedicated retail/gallery space (not a home office or co-working desk).
+
+<Step 1b: Location Count Verification — MANDATORY>
+- For EVERY business confirmed as retail, you MUST verify the exact number of owned locations by checking at least TWO of these sources:
+    1. The business website's dedicated "Locations," "Our Stores," "Visit Us," or "Find Us" page.
+    2. The "Contact Us" or "About Us" page (often lists all addresses).
+    3. The website footer (many multi-location businesses list all addresses in the footer).
+    4. Google Maps search for "[Business Name]" to see all listed locations.
+- DO NOT guess or assume a location count. If a search result says "locations" (plural), you must find the actual page and count the specific addresses listed.
+- If you find a "/pages/locations" or "/pages/stores" URL in search results, you MUST visit/search that specific URL to get the exact count.
+- COMMON MISTAKES TO AVOID:
+    - Assuming "1 location" for a business without checking their locations page (e.g., The Animal House has 3 stores in Maine, not 1).
+    - Attributing parent-brand locations to a subsidiary or online-only portal (e.g., Stickley Virtual Market is an online clearance store, not the Stickley showrooms).
+    - Counting third-party stockists or dealers as owned locations.
 
 <Step 2: Industry Classification & Benchmarking>
 - Categorize the business. Use these 2026 Industry Revenue per Sq Ft Benchmarks:
@@ -56,7 +70,7 @@ Required Columns:
 3. Retail Confirmed (Yes/No)
 4. Number of Owned Locations
 5. Predicted In-Person Revenue (Annual USD)
-6. Prediction Logic (Briefly explain: Industry category, Foot traffic score, and confirmation that third-party stockists/high-floor offices were excluded)
+6. Prediction Logic (Briefly explain: Industry category, Foot traffic score, sq ft used, source URL for location count verification, and confirmation that third-party stockists/high-floor offices were excluded)
 
 # EXECUTION
 - Execute in batches of 10.
@@ -64,3 +78,5 @@ Required Columns:
 - If a site is blocked or returns no results, use Google Maps / Yelp / MapQuest / Chamber of Commerce directories to verify if the location is a "Permanent Storefront" vs. an "Office."
 - If the first search returns "online only" or ambiguous results, perform a second search with different terms (e.g., add city name, try "visit us," check Google Maps) before marking as No.
 - DOUBLE-CHECK RULE: Before finalizing any business as "No Retail," confirm that the business does NOT appear on Google Maps or Yelp as a storefront, gallery, showroom, café, or other walk-in location.
+- LOCATION COUNT RULE: For every "Yes" retail business, include in your Prediction Logic the specific URL or source you used to verify the location count (e.g., "Verified via theanimalhouse.net/pages/locations: 3 addresses listed"). Never default to "1 location" without evidence.
+- VIRTUAL/ONLINE PORTAL RULE: If a Shopify URL contains words like "virtual," "online," "sale," "outlet," "clearance," "blowout," or "market" — investigate whether it is a standalone e-commerce portal rather than a physical store. Parent-brand showrooms do not count as locations for a subsidiary online sales domain.

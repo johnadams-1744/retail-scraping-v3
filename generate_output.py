@@ -435,11 +435,6 @@ INFERRED_RETAIL = {
         'sq_ft': 1200, 'traffic': 'High', 'traffic_mult': 1.5,
         'notes': '1 owned sweet shop. General retail confectionery. Likely tourist/downtown = high foot traffic.'
     },
-    'stickleyvirtualmarket.com': {
-        'locations': 5, 'industry': 'Furniture/Home Goods', 'benchmark_low': 400, 'benchmark_high': 550,
-        'sq_ft': 10000, 'traffic': 'Medium', 'traffic_mult': 1.0,
-        'notes': '5+ owned showrooms in NY, CT, MA, NJ, Denver. Premium furniture maker. Medium foot traffic.'
-    },
     'bigriverhardware.com': {
         'locations': 1, 'industry': 'General Retail (Hardware)', 'benchmark_low': 450, 'benchmark_high': 600,
         'sq_ft': 5000, 'traffic': 'Medium', 'traffic_mult': 1.0,
@@ -481,9 +476,9 @@ INFERRED_RETAIL = {
         'notes': '1 owned auto garage/parts shop. Specialty auto retail. Industrial = low foot traffic.'
     },
     'theanimalhouse.net': {
-        'locations': 1, 'industry': 'General Retail (Pet Store)', 'benchmark_low': 450, 'benchmark_high': 600,
+        'locations': 3, 'industry': 'General Retail (Pet Store)', 'benchmark_low': 450, 'benchmark_high': 600,
         'sq_ft': 2500, 'traffic': 'Medium', 'traffic_mult': 1.0,
-        'notes': '1 owned pet store. General retail. Medium foot traffic.'
+        'notes': '3 owned pet stores in Maine: Damariscotta (7 Coastal Market Dr, Mon-Sat 8am-6pm, Sun 10am-4pm), Westbrook (11 Main St Suite 5, Mon-Sat 10am-7pm, Sun 10am-5pm), Brunswick (90 Maine St, Mon-Sat 10am-7pm, Sun 10am-4pm). Verified via /pages/locations. General retail pet supply. Medium foot traffic (Main Street locations).'
     },
     'www.snsnola.com': {
         'locations': 1, 'industry': 'Specialty Apparel (Athleisure/Boutique)',

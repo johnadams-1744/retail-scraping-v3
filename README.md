@@ -4,7 +4,7 @@ A prompt-engineered AI agent that takes a CSV of business names and websites, th
 
 ## What This Agent Does
 
-1. **Verifies retail locations** — Checks each business for physical storefronts, showrooms, or galleries where customers can shop in person. Filters out offices, coworking spaces, residential addresses, and warehouses.
+1. **Verifies brand-owned retail locations** — Checks each business for physical storefronts, showrooms, or galleries that are owned and operated by the brand itself. Filters out offices, coworking spaces, residential addresses, warehouses, and third-party retailers/stockists that carry the brand's products.
 2. **Counts locations** — Determines how many distinct retail locations each business operates.
 3. **Estimates revenue** — Produces a predicted annual revenue figure based on product pricing, catalog depth, store footprint, location quality, and foot traffic signals.
 4. **Screens for Shopify Payments eligibility** — Flags businesses selling prohibited products (tobacco, nicotine, vapes, firearms, cannabis, pornography, etc.) that would be ineligible for Shopify Payments.
@@ -60,8 +60,8 @@ This prompt was built following current AI agent prompt engineering best practic
 
 - **Structured sections with XML-style tags** — Role, objective, workflow, output format, rules, examples, and thinking protocol are cleanly separated for reliable parsing.
 - **Chain-of-thought reasoning** — The `<thinking_protocol>` section forces the agent to reason through each business before committing to an output, reducing hallucination and improving accuracy.
-- **Explicit inclusion/exclusion criteria** — Instead of vague instructions ("find real stores"), the prompt defines precise signals for what counts as a retail location and what doesn't.
-- **Concrete examples** — Three worked examples (retail store, online-only, prohibited product) anchor the agent's understanding of expected output.
+- **Explicit inclusion/exclusion criteria** — Instead of vague instructions ("find real stores"), the prompt defines precise signals for what counts as a retail location and what doesn't, including the critical distinction between brand-owned stores and third-party stockists/retailers.
+- **Concrete examples** — Four worked examples (brand-owned retail store, third-party stockist page, online-only, prohibited product) anchor the agent's understanding of expected output.
 - **Guardrails and edge cases** — Rules cover inaccessible websites, approximate counts for large chains, the distinction between store hours vs. support hours, and by-appointment showrooms.
 - **Structured output schema** — A fixed CSV schema with typed columns ensures consistent, machine-readable output.
 

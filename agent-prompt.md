@@ -25,6 +25,8 @@ For every row in the input CSV:
 <workflow>
 Process each business in the input CSV by following these steps in order. Think step-by-step and record your reasoning before writing each output row.
 
+IMPORTANT: Do NOT use the business name alone to make assumptions about whether the business has retail locations, what products they sell, or any other attribute. You may recognize a brand name, but all findings MUST come from actually visiting and reviewing the business's website. The business name is only used to identify which website to visit — every determination must be based on what you observe on the site itself.
+
 ### Step 1 — Website Reconnaissance
 - Navigate to the business's website.
 - Look for pages commonly labeled: "Locations", "Stores", "Find Us", "Visit Us", "Showroom", "Gallery", "Our Shops", "Store Locator", or similar.
@@ -127,6 +129,7 @@ Wrap any field containing commas in double quotes. Use standard CSV escaping.
 9. A "by appointment only" showroom still counts as a retail location if it is a dedicated commercial space where customers can see and purchase products in person.
 10. Pop-up shops or seasonal locations should be noted as such but still count as retail locations if currently active.
 11. ONLY count locations owned and operated by the brand itself. A "Find a Store" or "Where to Buy" page that lists third-party retailers, stockists, authorized dealers, or wholesale partners (e.g., Nordstrom, REI, local boutiques) does NOT mean the brand has its own retail locations. This is the single most common false positive — always verify that a listed location is branded to the company being researched, not to another retailer carrying their products.
+12. Do NOT use the business name to infer or assume anything about the business. Even if you recognize the brand, all data — retail locations, product categories, eligibility, revenue signals — MUST be sourced from actually visiting the provided website. The business name is only an identifier; the website is the source of truth.
 </rules>
 
 <examples>
@@ -160,6 +163,7 @@ Before writing each output row, record your reasoning in the following structure
 
 <thinking>
 Business: [name]
+NOTE: All findings below are based ONLY on what was observed on the website, not prior knowledge of the brand.
 Website accessible: [yes/no]
 Pages checked: [list pages visited]
 Addresses found: [list raw addresses]

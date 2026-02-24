@@ -5,49 +5,57 @@ Process the attached CSV of business names and websites. Conduct deep-web resear
 
 # WORKFLOW & LOGIC CONSTRAINTS
 
-<Step 0: Mandatory Per-Business Website Verification>
-- CRITICAL: Every single business in the CSV MUST have its website checked/searched individually. Do NOT rely solely on name-based pattern matching or keyword heuristics to decide whether a business has physical retail.
-- Business names are UNRELIABLE indicators of physical retail. Many brands with abstract, non-descriptive, or tech-sounding names operate large physical showrooms, galleries, or stores (e.g., "Rarify" operates a 30,000 sq ft furniture showroom + a Philadelphia gallery; "David Beavis Fine Art" runs two galleries on premium retail corridors). Conversely, names containing "Store" or "Shop" may be online-only.
-- If an initial web search returns ambiguous or "online-only" results, perform a SECOND verification search using Google Maps, Yelp, or the business's own "Visit Us" / "Locations" / "Contact" / "Our Space" page before concluding "No retail."
-- Search terms to use for each business: "[Business Name] store location," "[Business Name] visit us hours," "[Website domain]/pages/locations," "[Website domain]/pages/contact-us," "[Business Name] [city from any clue] physical location."
-- SPECIFICALLY for furniture, art, design, home goods, and high-value physical product businesses: these industries very frequently maintain showrooms, warehouses open to the public, or galleries that are not obvious from the brand name. Always search these categories with extra scrutiny.
+<Step 0: Mandatory Per-Business Website Scanning — NO SHORTCUTS>
+- CRITICAL: You MUST scan every single website in the CSV. Do NOT use business names, URL patterns, or keyword heuristics to decide which businesses to research. Names are unreliable (e.g., "Rarify" operates a 30,000 sq ft furniture showroom; "David Beavis Fine Art" runs two galleries on premium retail corridors).
+- For EACH website, fetch and analyze these pages for retail signals:
+  - Homepage
+  - /pages/locations, /pages/location, /pages/stores, /pages/store
+  - /pages/visit-us, /pages/visit, /pages/our-space, /pages/our-facilities
+  - /pages/find-us, /pages/find-a-store, /pages/store-locator
+  - /pages/contact-us, /pages/contact
+  - /pages/about-us, /pages/about
+  - /pages/showroom, /pages/gallery, /pages/hours, /pages/store-hours
+- If the website is blocked or returns no results, use Google Maps, Yelp, MapQuest, or Chamber of Commerce directories to verify.
 
-<Step 1: Website Scraping & Verification>
-- Scan the website for ANY of these signals (expand beyond just retail-specific terms):
-  - "Store Location," "Visit Us," "Showroom," "Our Locations," "Hours," "Gallery," "Studio," "Workshop," "Tasting Room," "Taproom," "Café," "Bakery," "Farm Stand," "Pop-Up," "Flagship," "Warehouse (open to public)," "Appointments Available," "Walk-Ins Welcome," "Open [Days]," "Come See Us," "Find Us," "Our Space," "The Shop," "Our Facilities," "Schedule a Visit"
-- ALSO CHECK: Google Maps listing, Yelp page, and any third-party directory (MapQuest, Loc8NearMe, Locally.com, Chamber of Commerce directories) for the business name + address. Many businesses have physical locations that are poorly documented on their own website.
-- ALSO CHECK: Local press coverage. Businesses often get covered by local newspapers or magazines when they open a physical location (e.g., Philly Mag, local Eater, Patch, etc.). Search "[Business Name] opening store" or "[Business Name] new showroom."
-- EXCLUSION CRITERIA: Flag as "0 Locations" if:
-    - The address is a suite number on a high floor (e.g., Floor 12, Suite 4500 in a high-rise).
+<Step 1: Retail Signal Detection>
+- On each page, search for ALL of these signals:
+  - **Address patterns**: Street addresses with street types (St, Ave, Blvd, Rd, Dr, etc.) combined with city/state/zip
+  - **Store hours**: Day-of-week + time ranges (e.g., "Mon-Sat 10am-6pm")
+  - **Location keywords**: "Visit Us," "Our Store," "Our Showroom," "Our Gallery," "Our Studio," "Our Location," "Our Facilities," "Store Hours," "Gallery Hours," "Hours of Operation," "Located at," "We are located," "Come Visit," "Walk-Ins Welcome," "In-Store Pickup," "Curbside Pickup," "Schedule a Visit," "Open to the Public," "Find Us," "Store Location"
+  - **Location page links**: Navigation links pointing to location/store/visit pages
+  - **Local press coverage**: Search "[Business Name] opening store" or "[Business Name] new showroom" for businesses in furniture, art, design, and home goods categories
+- A business qualifies for retail verification when it has BOTH:
+  1. At least one physical address (street address + city/state or zip code)
+  2. At least one strong retail keyword (visit us, store hours, our store, our showroom, etc.)
+
+<Step 1b: Exclusion Checks>
+- Flag as "0 Locations" if:
+    - The address is a suite on a high floor (e.g., Floor 12, Suite 4500 in a high-rise) with no ground-floor retail presence.
     - Hours are explicitly for "Customer Support" or "Phone Lines" only.
-    - Location is a co-working space (e.g., WeWork, Regus) or residential address with no dedicated public-facing retail/gallery space. NOTE: If a residential building houses a dedicated ground-floor gallery or showroom that is covered by local press as a retail/gallery space and accepts visitors, it DOES count.
-    - MANDATORY: Exclude "Stockists" or "Retail Partners." Only count locations owned/operated by the brand or dedicated brand showrooms.
-    - Products sold are banned from Stripe (e.g., nicotine products, cannabis products that include THC, vape devices, kratom, etc.)
-    - The Shopify store is a virtual/online-only sales portal for a parent brand (e.g., an "Online Factory Sale" or "Virtual Market" storefront). These are NOT physical locations even if the parent brand has showrooms elsewhere. Only count locations that belong to THIS specific Shopify store entity.
-- INCLUSION CRITERIA: Confirm as retail if:
-    - Ground floor presence is visible or highly implied.
-    - "Store Hours" or "Gallery Hours" are listed for public browsing/walk-ins.
-    - Address is in a known retail corridor (e.g., Broadway, High St, Fashion District, Main St, 5th Avenue, Rodeo Drive).
-    - Business operates an art gallery, studio with public hours, showroom, tasting room, farm store, warehouse showroom, or any other physical space where consumers can browse and purchase in person.
-    - "By appointment" showrooms still count IF the business owns/operates the space and it is a dedicated retail/gallery space (not a home office or co-working desk).
-    - The business has a warehouse or industrial space that doubles as a showroom open to visitors (common in furniture, lighting, vintage, and design industries).
+    - Location is a co-working space (WeWork, Regus) or purely residential with no dedicated public-facing retail/gallery space.
+    - MANDATORY: Exclude "Stockists" or "Retail Partners." Only count locations owned/operated by the brand.
+    - Products are banned from Stripe (nicotine, cannabis/THC, vape devices, kratom, etc.).
+    - The Shopify store is a virtual/online-only sales portal (URLs containing "virtual," "online," "sale," "outlet," "clearance," "blowout" must be investigated as potential e-commerce-only portals).
+    - Website explicitly states "online only," "no physical location," "no storefront," etc.
+- Include as retail if:
+    - Ground floor presence with public store hours for walk-ins.
+    - Address is on a known retail corridor.
+    - Business operates a gallery, studio, showroom, tasting room, warehouse showroom, farm store, or other walk-in space.
+    - "By appointment" counts IF the space is brand-owned and dedicated to retail/gallery (not a home office).
 
-<Step 1b: Location Count Verification — MANDATORY>
-- For EVERY business confirmed as retail, you MUST verify the exact number of owned locations by checking at least TWO of these sources:
-    1. The business website's dedicated "Locations," "Our Stores," "Visit Us," "Our Space," "Our Facilities," or "Find Us" page.
-    2. The "Contact Us" or "About Us" page (often lists all addresses).
-    3. The website footer (many multi-location businesses list all addresses in the footer).
-    4. Google Maps search for "[Business Name]" to see all listed locations.
-- DO NOT guess or assume a location count. If a search result says "locations" (plural), you must find the actual page and count the specific addresses listed.
-- If you find a "/pages/locations," "/pages/our-space," or "/pages/stores" URL in search results, you MUST visit/search that specific URL to get the exact count and square footage details.
-- COMMON MISTAKES TO AVOID:
-    - Assuming "1 location" for a business without checking their locations page (e.g., The Animal House has 3 stores in Maine, not 1).
-    - Attributing parent-brand locations to a subsidiary or online-only portal (e.g., Stickley Virtual Market is an online clearance store, not the Stickley showrooms).
-    - Counting third-party stockists or dealers as owned locations.
-    - Missing warehouse/showroom spaces that don't appear as traditional "stores" but are open to visitors (e.g., Rarify's 30,000 sq ft Lebanon County warehouse showroom).
+<Step 1c: Location Count Verification — MANDATORY>
+- For EVERY confirmed retail business, verify the exact location count by checking at least TWO sources:
+    1. The /pages/locations or /pages/stores page (count individual addresses listed).
+    2. The /pages/contact-us or /pages/about-us page.
+    3. The website footer.
+    4. Google Maps search for the business name.
+- Count unique zip codes / postal codes found across location pages as a location count proxy.
+- NEVER guess "1 location" without evidence. If multiple distinct addresses with different zip codes appear, count each as a separate location.
+- NEVER attribute parent-brand locations to a subsidiary Shopify store or online sales portal.
+- Cite the source page in the Prediction Logic (e.g., "Verified via theanimalhouse.net/pages/locations: 3 addresses listed").
 
 <Step 2: Industry Classification & Benchmarking>
-- Categorize the business. Use these 2026 Industry Revenue per Sq Ft Benchmarks:
+- Categorize based on the products/services found on the website. Use these 2026 benchmarks:
     - Luxury/Jewelry: $1,250 - $1,500 / sq ft
     - Specialty Apparel (Athleisure/Boutique): $600 - $850 / sq ft
     - Furniture/Home Goods: $400 - $550 / sq ft
@@ -59,14 +67,13 @@ Process the attached CSV of business names and websites. Conduct deep-web resear
     - Low (Industrial/Destination-only/Rural/By-Appointment/Warehouse): 0.7x
 
 <Step 3: Revenue Prediction Calculation>
-- Formula: [Total Retail Sq Ft] * [Industry Benchmark] * [Foot Traffic Multiplier].
-- If sq footage is unknown, use these 2026 defaults:
+- Formula: [Number of Locations] * [Sq Ft per Location] * [Industry Benchmark $/sq ft] * [Foot Traffic Multiplier]
+- If sq footage is found on the website or in press coverage, use that figure. Otherwise use defaults:
     - Standard Boutique / Gallery: 1,500 sq ft
     - Standard Retail Store: 2,000 sq ft
     - Furniture Showroom: 5,000 - 10,000 sq ft
     - Warehouse Showroom: 10,000 - 30,000 sq ft
     - Flagship Store: 15,000+ sq ft
-- If the business's "Our Space" or "Our Facilities" page mentions specific square footage, USE THAT instead of defaults.
 
 # OUTPUT FORMAT (CSV)
 Rank by 'Predicted In-Person Revenue' (Highest to Lowest).
@@ -76,14 +83,11 @@ Required Columns:
 3. Retail Confirmed (Yes/No)
 4. Number of Owned Locations
 5. Predicted In-Person Revenue (Annual USD)
-6. Prediction Logic (Briefly explain: Industry category, Foot traffic score, sq ft used and source, source URL for location count verification, and confirmation that third-party stockists/high-floor offices were excluded)
+6. Prediction Logic (Include: Industry category, foot traffic score, sq ft used and source, source URL/page for location count verification, and confirmation that stockists/high-floor offices were excluded)
 
 # EXECUTION
-- Execute in batches of 10.
-- For EVERY business, perform at least one targeted web search to check for physical locations. Do not skip any business or rely on name-pattern assumptions alone.
-- If a site is blocked or returns no results, use Google Maps / Yelp / MapQuest / Chamber of Commerce directories to verify if the location is a "Permanent Storefront" vs. an "Office."
-- If the first search returns "online only" or ambiguous results, perform a second search with different terms (e.g., add city name, try "visit us," check Google Maps) before marking as No.
-- DOUBLE-CHECK RULE: Before finalizing any business as "No Retail," confirm that the business does NOT appear on Google Maps or Yelp as a storefront, gallery, showroom, café, or other walk-in location.
-- LOCATION COUNT RULE: For every "Yes" retail business, include in your Prediction Logic the specific URL or source you used to verify the location count (e.g., "Verified via theanimalhouse.net/pages/locations: 3 addresses listed"). Never default to "1 location" without evidence.
-- VIRTUAL/ONLINE PORTAL RULE: If a Shopify URL contains words like "virtual," "online," "sale," "outlet," "clearance," "blowout," or "market" — investigate whether it is a standalone e-commerce portal rather than a physical store. Parent-brand showrooms do not count as locations for a subsidiary online sales domain.
-- SQ FT EVIDENCE RULE: If a business's website or press coverage mentions specific square footage (e.g., "our 30,000 sq ft showroom"), use that figure in the revenue calculation instead of defaults. Cite the source.
+- Scan EVERY business website programmatically — do not cherry-pick based on names.
+- Execute web searches in batches of 10 for verification of flagged businesses.
+- For EVERY "Yes" retail business, the Prediction Logic must cite the specific page or source used to verify the location count.
+- For EVERY "No" business, include the website signal score from scanning so the output is auditable.
+- If a first search returns "online only" or ambiguous results, perform a second search with different terms before marking No.

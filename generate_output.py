@@ -284,6 +284,15 @@ CONFIRMED_RETAIL = {
         'traffic_mult': 1.5,
         'notes': '2 owned galleries: 314 Main St, Park City UT (opened 2015) and 491 5th Ave South, Naples FL (opened 2024). Both are on premium retail corridors (Main St Park City + 5th Ave Naples). High foot traffic. No stockists counted.'
     },
+    'rarify.co': {
+        'locations': 2,
+        'industry': 'Furniture/Home Goods',
+        'benchmark_low': 400, 'benchmark_high': 550,
+        'sq_ft': 15000,
+        'traffic': 'Low',
+        'traffic_mult': 0.7,
+        'notes': '2 owned locations: Philadelphia showroom at 735 Bainbridge St, Bella Vista, Philadelphia PA 19147 (opened Jan 2025, dedicated gallery in townhouse ground floor + basement — covered by Philly Mag & Philadelphia Inquirer as furniture showroom) and Lebanon County PA warehouse/showroom (~30,000 sq ft in historic Bethlehem Steel mill, 1.5hrs from Philly). Using blended 15,000 avg sq ft per location. Destination-only model = low foot traffic. Verified via rarify.co/pages/our-space. No stockists counted.'
+    },
     'www.mbgourds.com': {
         'locations': 1,
         'industry': 'General Retail (Gift/Home Decor)',

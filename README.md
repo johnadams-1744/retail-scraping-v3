@@ -64,11 +64,14 @@ This prompt was built following current AI agent prompt engineering best practic
 
 - **Structured sections with XML-style tags** — Role, objective, workflow, output format, rules, examples, and thinking protocol are cleanly separated for reliable parsing.
 - **Three-phase funnel architecture** — The cheapest check (product eligibility) runs first on all businesses, eliminating the most rows. Retail location verification runs only on eligible businesses. Revenue estimation (the most expensive step) runs only on businesses with verified retail locations. This minimizes wasted effort and makes the agent reliable on large lists.
+- **Systematic website scanning** — Phase 2 specifies exact subpage URL paths to check for every business, with a comprehensive keyword list. The agent cannot skip businesses or cherry-pick by name.
+- **Structured revenue model** — Phase 3 uses a reproducible formula (locations x sqft x industry benchmark x foot traffic multiplier) with specific benchmark tables, default footprint estimates, and traffic multipliers, rather than vague "combine signals" instructions.
+- **Multi-source verification** — Location counts must be verified from at least 2 sources, and "No Retail" results must cite which pages were checked for auditability.
 - **Chain-of-thought reasoning** — The `<thinking_protocol>` section forces the agent to reason through each business at each phase before committing to an output, reducing hallucination and improving accuracy.
-- **Explicit inclusion/exclusion criteria** — Instead of vague instructions ("find real stores"), the prompt defines precise signals for what counts as a retail location and what doesn't, including the critical distinction between brand-owned stores and third-party stockists/retailers.
-- **Concrete examples** — Four worked examples demonstrating elimination at each funnel stage (Phase 1 prohibited product, Phase 2 stockist-only, Phase 2 online-only, Phase 3 qualified lead) anchor the agent's understanding of expected output.
-- **Guardrails and edge cases** — Rules cover inaccessible websites, approximate counts for large chains, the distinction between store hours vs. support hours, and by-appointment showrooms.
-- **Structured output schema** — A fixed CSV schema with typed columns ensures consistent, machine-readable output.
+- **Explicit inclusion/exclusion criteria** — Instead of vague instructions ("find real stores"), the prompt defines precise signals for what counts as a retail location and what doesn't, including the critical distinction between brand-owned stores and third-party stockists/retailers. Exclusion rules include "BUT NOTE" carve-outs for non-traditional spaces like converted townhouses and warehouse showrooms.
+- **Domain-scoped research** — The agent is constrained to the specific domain provided in the CSV, preventing false positives from parent/sister brand websites.
+- **Seven worked examples** — Covers every funnel exit point: prohibited product, stockist-only, parent-brand domain confusion, online-only, non-traditional showroom, multi-location chain, and traditional storefronts.
+- **Guardrails and edge cases** — Rules cover inaccessible websites, approximate counts for large chains, store hours vs. support hours, by-appointment showrooms, B2B-only businesses, test stores, and duplicate URLs.
 
 ## Customization
 

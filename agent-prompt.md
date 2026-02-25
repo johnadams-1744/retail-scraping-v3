@@ -57,7 +57,7 @@ Prohibited product categories:
 - Products or services targeting sanctioned countries or persons (Cuba, Iran, North Korea, Syria, Crimea)
 
 Phase 1 decisions:
-- **INELIGIBLE** → Business's primary product line is prohibited. Record the reason. This business is DONE — do not proceed to Phase 2. It still appears in the final CSV with Eligible = "No".
+- **INELIGIBLE** → Business's primary product line is prohibited. Record the reason. This business is DONE — do not proceed to Phase 2. It still appears in the final CSV with Number of Retail Locations = 0 and the prohibition noted in Reasoning.
 - **REVIEW NEEDED** → A minor portion of inventory is in a gray area (e.g., a general store that happens to sell a few lighters). Flag it but allow it to proceed to Phase 2.
 - **ELIGIBLE** → Products are not prohibited. Proceed to Phase 2.
 
@@ -112,7 +112,7 @@ When uncertain, look for corroborating signals:
 - "In-store pickup" or "Shop in person" language on the site.
 
 Phase 2 decisions:
-- **NO RETAIL** → No brand-owned retail locations found. This business is DONE — do not proceed to Phase 3. It still appears in the final CSV with Has Retail Locations = FALSE.
+- **NO RETAIL** → No brand-owned retail locations found. This business is DONE — do not proceed to Phase 3. It still appears in the final CSV with Number of Retail Locations = 0.
 - **HAS RETAIL** → One or more verified brand-owned retail locations. Record addresses and count. Proceed to Phase 3.
 
 After completing Phase 2, report a summary:
@@ -149,26 +149,21 @@ Produce the final CSV containing ALL businesses from the original input (includi
 </workflow>
 
 <output_format>
-Return the results as a CSV (with headers) using exactly these columns in this order:
+Return the results as a CSV (with headers) using exactly these 6 columns in this order:
 
 | Column | Type | Description |
 |---|---|---|
-| Business Name | text | Exact business name from the input CSV |
-| Web Domain | text | The website domain from the input (cleaned, e.g., "example.com") |
-| Eligible for Shopify Payments | text | "Yes", "No", or "Review Needed" — result of Phase 1 |
-| Eligibility Notes | text | If "No" or "Review Needed", state the prohibited category. Otherwise "—" |
-| Has Retail Locations | text | "TRUE", "FALSE", or "UNKNOWN" — result of Phase 2. Blank if eliminated in Phase 1. |
-| Number of Retail Locations | integer | Count of verified brand-owned retail locations. Blank if eliminated in Phase 1. |
-| Location Details | text | Semicolon-separated list of verified location addresses. "N/A" if none. Blank if eliminated in Phase 1. |
-| Predicted Annual Revenue | text | Revenue estimate with confidence (e.g., "$1.2M–$2M (Medium confidence)"). Only populated for businesses that passed Phase 1 AND Phase 2. |
-| Revenue Reasoning | text | Brief explanation of how the estimate was derived. Only populated for Phase 3 businesses. |
-| Outreach Priority | integer | Rank from 1 (highest) to N among qualifying businesses. Blank for eliminated businesses. |
-| Funnel Stage | text | Where the business exited the funnel: "Phase 1 — Ineligible Product", "Phase 2 — No Retail Locations", or "Phase 3 — Qualified Lead" |
+| Name | text | Exact business name from the input CSV |
+| Website | text | The website URL or domain from the input |
+| Number of Retail Locations | integer | Count of verified brand-owned retail locations. 0 if none found or if eliminated in Phase 1. |
+| Predicted Revenue | text | Revenue estimate with confidence (e.g., "$1.2M–$2M (Medium confidence)"). Only populated for businesses that passed all 3 phases. Leave blank for eliminated businesses. |
+| Product Type | text | Brief description of the primary product categories sold by the business as observed on the website (e.g., "Sustainable footwear & apparel", "Vintage & contemporary furniture", "E-cigarettes & vaping products"). Always populated — this is determined in Phase 1 for every business. |
+| Reasoning | text | A concise summary explaining the result. This single field must cover: (1) why the business was eliminated or qualified, (2) eligibility status and any prohibited product flags, (3) location details (addresses found, why they count or don't count), and (4) for Phase 3 businesses, how the revenue estimate was derived. This is the most important column — it gives the sales team full context in one place. |
 
 Sort the CSV as follows:
-1. Phase 3 qualified leads first, sorted by Outreach Priority (1 at top).
-2. Then Phase 2 eliminated businesses (no retail locations).
-3. Then Phase 1 eliminated businesses (ineligible products).
+1. Qualified leads first (passed all 3 phases), sorted by predicted revenue descending.
+2. Then businesses with no retail locations (Phase 2 eliminated).
+3. Then ineligible businesses (Phase 1 eliminated).
 
 Wrap any field containing commas in double quotes. Use standard CSV escaping.
 </output_format>
@@ -181,11 +176,11 @@ Wrap any field containing commas in double quotes. Use standard CSV escaping.
 4. Report a summary after each phase so progress is visible (e.g., "Phase 1 complete: 40 eligible, 8 ineligible, 2 review needed").
 
 ### Data integrity
-5. NEVER fabricate addresses or locations. If you cannot find location information, set Has Retail Locations to FALSE and Number of Retail Locations to 0.
+5. NEVER fabricate addresses or locations. If you cannot find location information, set Number of Retail Locations to 0.
 6. NEVER guess product categories. Base eligibility decisions only on products actually listed on the website.
 7. Do NOT use the business name to infer or assume anything about the business. Even if you recognize the brand, all data — product categories, retail locations, eligibility, revenue signals — MUST be sourced from actually visiting the provided website. The business name is only an identifier; the website is the source of truth.
 8. SCOPE ALL FINDINGS TO THE PROVIDED DOMAIN. Only count locations, products, and information found on the specific website domain from the CSV. If the site links to a parent brand, sister company, or related entity with its own domain and physical locations, do NOT attribute those locations to the business being evaluated. Each CSV row = one business entity = one domain.
-9. When a website is unreachable, times out, or is behind a paywall, note "Website inaccessible" in the Eligibility Notes column. Allow it to pass Phase 1 (benefit of the doubt) but set Has Retail Locations to "UNKNOWN" in Phase 2. The sales team needs to know which leads require manual follow-up.
+9. When a website is unreachable, times out, or is behind a paywall, allow it to pass Phase 1 (benefit of the doubt) and note "Website inaccessible — needs manual review" in the Reasoning column. Set Number of Retail Locations to 0. The sales team needs to know which leads require manual follow-up.
 
 ### Retail location validation
 10. ONLY count locations owned and operated by the brand itself. A "Find a Store" or "Where to Buy" page that lists third-party retailers, stockists, authorized dealers, or wholesale partners (e.g., Nordstrom, REI, local boutiques) does NOT mean the brand has its own retail locations. This is the single most common false positive — always verify that a listed location is branded to the company being researched, not to another retailer carrying their products.
@@ -195,39 +190,39 @@ Wrap any field containing commas in double quotes. Use standard CSV escaping.
 14. If a business has a "store locator" page listing 50+ brand-owned locations, count them but you may note "50+ locations — count may be approximate" rather than listing every address.
 
 ### Revenue estimation
-15. For revenue estimation, always show your work in the Revenue Reasoning column so the sales team can evaluate the estimate's basis.
-16. Only estimate revenue for businesses that reached Phase 3 (passed eligibility AND have retail locations). Leave revenue columns blank for all other businesses.
+15. For revenue estimation, always show your work in the Reasoning column so the sales team can evaluate the estimate's basis.
+16. Only populate Predicted Revenue for businesses that reached Phase 3 (passed eligibility AND have retail locations). Leave it blank for all other businesses.
 </rules>
 
 <examples>
-Column order: Business Name, Web Domain, Eligible for Shopify Payments, Eligibility Notes, Has Retail Locations, Number of Retail Locations, Location Details, Predicted Annual Revenue, Revenue Reasoning, Outreach Priority, Funnel Stage
+Column order: Name, Website, Number of Retail Locations, Predicted Revenue, Product Type, Reasoning
 
 ### Example 1 — Eliminated in Phase 1 (prohibited products)
 Input: "VaporFi, vaporfi.com"
 Phase 1: Visit site → products are e-cigarettes, vape devices, e-liquids → INELIGIBLE. Stop here, do not check locations.
 Output row:
-VaporFi, vaporfi.com, No, "Prohibited: e-cigarettes, vaping devices, and nicotine products", , , , , , , Phase 1 — Ineligible Product
+VaporFi, vaporfi.com, 0, , E-cigarettes & vaping products, "INELIGIBLE — Prohibited products: e-cigarettes, vaping devices, and nicotine products. Not eligible for Shopify Payments."
 
 ### Example 2 — Eliminated in Phase 2 (third-party stockists only, no owned stores)
 Input: "Hydro Flask, hydroflask.com"
 Phase 1: Visit site → products are water bottles and accessories → ELIGIBLE.
-Phase 2: Website has a "Find a Store" page, but every listed location is a third-party retailer (REI, Dick's Sporting Goods, Target, etc.) — none are Hydro Flask-branded stores. Corporate HQ in Bend, OR is an office. → NO RETAIL. Stop here, do not estimate revenue.
+Phase 2: Website has a "Find a Store" page, but every listed location is a third-party retailer (REI, Dick's Sporting Goods, Target, etc.) — none are Hydro Flask-branded stores. Corporate HQ in Bend, OR is an office. → NO RETAIL.
 Output row:
-Hydro Flask, hydroflask.com, Yes, —, FALSE, 0, "N/A (store locator lists third-party retailers only — REI, Target, etc.)", , , , Phase 2 — No Retail Locations
+Hydro Flask, hydroflask.com, 0, , Water bottles & drinkware accessories, "NO RETAIL — Eligible products but no brand-owned locations. Store locator lists only third-party retailers (REI, Target, Dick's Sporting Goods). HQ in Bend OR is office-only."
 
 ### Example 3 — Eliminated in Phase 2 (online-only, parent brand has stores but this entity does not)
 Input: "Stickley Virtual Market, stickleyvirtualmarket.com"
 Phase 1: Visit stickleyvirtualmarket.com → products are furniture sold online → ELIGIBLE.
 Phase 2: stickleyvirtualmarket.com is an online-only sales channel. The site links to stickley.com, which is the parent brand with physical showrooms — but those showrooms belong to Stickley, NOT to Stickley Virtual Market. No locations are listed on stickleyvirtualmarket.com itself. → NO RETAIL.
 Output row:
-Stickley Virtual Market, stickleyvirtualmarket.com, Yes, —, FALSE, 0, "N/A (online-only sales channel; parent brand stickley.com has showrooms but they are not listed on this domain)", , , , Phase 2 — No Retail Locations
+Stickley Virtual Market, stickleyvirtualmarket.com, 0, , Furniture (online sales channel), "NO RETAIL — Online-only sales channel. Parent brand stickley.com operates showrooms but those are not listed on stickleyvirtualmarket.com and belong to a different entity."
 
 ### Example 4 — Eliminated in Phase 2 (online-only with office address)
 Input: "Notion, notion.so"
 Phase 1: Visit site → product is software/SaaS → ELIGIBLE (not prohibited, though not physical goods).
 Phase 2: Only address is "2300 Harrison St, San Francisco, CA" — corporate office, no storefront, no store hours. → NO RETAIL.
 Output row:
-Notion, notion.so, Yes, —, FALSE, 0, N/A, , , , Phase 2 — No Retail Locations
+Notion, notion.so, 0, , Software / SaaS, "NO RETAIL — Eligible products but no retail locations. Only address (2300 Harrison St SF) is a corporate office with no storefront or store hours."
 
 ### Example 5 — Qualified lead with non-traditional showroom spaces (passes all 3 phases)
 Input: "Rarify, rarify.co"
@@ -235,7 +230,7 @@ Phase 1: Visit rarify.co → products are vintage and contemporary furniture, li
 Phase 2: About page and contact page list 2 brand-owned showroom locations: (1) a gallery in a converted Philadelphia townhouse at 735 Bainbridge St, and (2) an 80,000 sqft showroom in a former warehouse in Lebanon, PA. Both are described as spaces where clients can visit to browse the collection. Even though one is in a townhouse and one is in a warehouse, both function as showrooms. → HAS RETAIL, 2 locations.
 Phase 3: Curated furniture avg price $2,000–$15,000+, 12,000+ pieces in inventory, press coverage in Robb Report, 2 showrooms → "$3M–$8M (Low confidence)".
 Output row:
-Rarify, rarify.co, Yes, —, TRUE, 2, "735 Bainbridge St Philadelphia PA; Warehouse showroom Lebanon PA", "$3M–$8M (Low confidence)", "2 showrooms (gallery + warehouse), curated vintage/contemporary furniture avg $2K–$15K+, 12K+ inventory pieces, press coverage in Robb Report and ICFF", 2, Phase 3 — Qualified Lead
+Rarify, rarify.co, 2, "$3M–$8M (Low confidence)", Vintage & contemporary furniture / lighting / design objects, "QUALIFIED — Eligible products. 2 brand-owned showrooms: (1) gallery at 735 Bainbridge St Philadelphia PA (converted townhouse), (2) 80K sqft warehouse showroom in Lebanon PA. Revenue est. based on avg product price $2K–$15K+, 12K+ inventory pieces, press in Robb Report and ICFF."
 
 ### Example 6 — Qualified lead with traditional storefronts (passes all 3 phases)
 Input: "Allbirds, allbirds.com"
@@ -243,7 +238,7 @@ Phase 1: Visit site → products are sustainable footwear and apparel ($100–$1
 Phase 2: allbirds.com/pages/stores lists 40+ brand-owned stores with the Allbirds name, ground-level storefronts, posted store hours → HAS RETAIL, 42 locations.
 Phase 3: Average product price ~$120, 42 stores in premium retail corridors, publicly traded company → "$200M–$300M (Medium confidence)".
 Output row:
-Allbirds, allbirds.com, Yes, —, TRUE, 42, "73 Spring St New York NY; 456 University Ave Palo Alto CA; ... (40 more)", "$200M–$300M (Medium confidence)", "42 brand-owned stores in premium retail locations, avg product price ~$120, publicly traded with known revenue filings", 1, Phase 3 — Qualified Lead
+Allbirds, allbirds.com, 42, "$200M–$300M (Medium confidence)", Sustainable footwear & apparel, "QUALIFIED — Eligible products. 42 brand-owned stores (73 Spring St New York NY; 456 University Ave Palo Alto CA; +40 more). Revenue est. based on avg product price ~$120, 42 stores in premium retail corridors, publicly traded with known revenue filings."
 </examples>
 
 <thinking_protocol>

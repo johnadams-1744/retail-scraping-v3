@@ -47,21 +47,16 @@ Upload your CSV and instruct the agent to process it. For large lists (100+ busi
 
 ### 4. Review the Output
 
-The agent returns a CSV with these columns, sorted by outreach priority:
+The agent returns a CSV with these columns, sorted with qualified leads first by revenue:
 
 | Column | Description |
 |---|---|
-| Business Name | From your input |
-| Web Domain | Cleaned domain |
-| Eligible for Shopify Payments | Yes / No / Review Needed (Phase 1 result) |
-| Eligibility Notes | Reason if ineligible |
-| Has Retail Locations | TRUE / FALSE / UNKNOWN (Phase 2 result, blank if eliminated in Phase 1) |
-| Number of Retail Locations | Integer count (blank if eliminated in Phase 1) |
-| Location Details | Semicolon-separated addresses |
-| Predicted Annual Revenue | Estimate with confidence (only for Phase 3 qualified leads) |
-| Revenue Reasoning | How the estimate was derived (only for Phase 3 qualified leads) |
-| Outreach Priority | Rank 1-N among qualified leads (blank for eliminated businesses) |
-| Funnel Stage | Where the business exited: Phase 1/2/3 |
+| Name | Business name from your input |
+| Website | Website URL or domain |
+| Number of Retail Locations | Count of verified brand-owned locations (0 if none or ineligible) |
+| Predicted Revenue | Revenue estimate with confidence level (only for qualified leads) |
+| Product Type | Primary product categories observed on the website |
+| Reasoning | Full context: why qualified/eliminated, eligibility, location details, revenue basis |
 
 ## Prompt Design Principles
 

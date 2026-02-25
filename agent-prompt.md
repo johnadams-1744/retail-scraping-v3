@@ -25,7 +25,11 @@ Return a single output CSV containing ALL businesses (including eliminated ones,
 <workflow>
 Process the input CSV as a three-phase funnel. Each phase filters the list so you spend the least effort on businesses that won't qualify. Complete ALL of one phase before starting the next.
 
-IMPORTANT: Do NOT use the business name alone to make assumptions about whether the business has retail locations, what products they sell, or any other attribute. You may recognize a brand name, but all findings MUST come from actually visiting and reviewing the business's website. The business name is only used to identify which website to visit — every determination must be based on what you observe on the site itself.
+IMPORTANT — Two foundational rules that apply across all phases:
+
+1. Do NOT use the business name alone to make assumptions about whether the business has retail locations, what products they sell, or any other attribute. You may recognize a brand name, but all findings MUST come from actually visiting and reviewing the business's website. The business name is only used to identify which website to visit — every determination must be based on what you observe on the site itself.
+
+2. SCOPE ALL RESEARCH TO THE PROVIDED DOMAIN. Only count locations, products, and information that appear on the specific website domain given in the CSV. If the website links to or is a subsidiary of a parent brand with its own separate website and physical locations, do NOT attribute the parent brand's locations to the business being evaluated. Example: if the CSV says "Stickley Virtual Market, stickleyvirtualmarket.com", only count locations listed on stickleyvirtualmarket.com — do NOT follow links to stickley.com and count Stickley's showrooms as belonging to Stickley Virtual Market. Each row in the CSV is a distinct business entity tied to its specific domain.
 
 ---
 
@@ -67,9 +71,14 @@ After completing Phase 1 for every row, report a summary:
 For each business that passed Phase 1, determine whether it operates brand-owned retail locations. Do NOT estimate revenue yet — just find and validate locations.
 
 ### Step 2a — Find Location Pages
-- Look for pages commonly labeled: "Locations", "Stores", "Find Us", "Visit Us", "Showroom", "Gallery", "Our Shops", "Store Locator", or similar.
-- Also check the footer, Contact page, and About page for physical address information.
-- Look for embedded Google Maps, store-finder widgets, or address lists.
+Search broadly — showrooms and galleries are not always on a dedicated "Stores" page. Check ALL of the following:
+- Pages labeled: "Locations", "Stores", "Find Us", "Visit Us", "Showroom", "Gallery", "Our Shops", "Store Locator", "Showrooms", "Studios", or similar.
+- The About page — many businesses mention their showroom or gallery space here, especially design, furniture, and art businesses.
+- The Contact page and footer — often contains a physical address with "visit us" language.
+- FAQ pages — may mention "Can I visit?" or "Do you have a showroom?".
+- Press/News pages — articles or press mentions often reference physical locations.
+- Look for embedded Google Maps, store-finder widgets, appointment booking links (e.g., "Schedule a visit", "Book a showroom appointment"), or address lists.
+- Important: some businesses (especially in furniture, art, and design) use the term "showroom" or "gallery" instead of "store". Do not overlook these — they are retail locations for our purposes.
 
 CRITICAL — Distinguish brand-owned locations from third-party stockists:
 - Many brands have a "Find a Store" or "Where to Buy" page that lists OTHER retailers (e.g., Nordstrom, Target, local boutiques) that carry their products. These are stockists/wholesale partners and do NOT count as the brand's own retail locations.
@@ -82,18 +91,19 @@ For every address found, determine whether it is a genuine brand-owned retail lo
 
 INCLUDE if the location meets ALL of these criteria:
 - The location is owned and operated by the brand itself (not a third-party retailer, stockist, dealer, or wholesale partner selling the brand's products).
-- Street-level or ground-floor commercial address (storefronts, shopping centers, malls, standalone buildings).
-- Has posted store hours (not just "support hours" or "customer service hours" — look for "Store Hours", "Visit Us", or hours tied to a physical location).
-- Appears to be a place the general public can walk in, browse products, and purchase in person.
+- The location is listed on the specific domain provided in the CSV (not on a parent brand's or sister company's separate website).
+- Has a physical address where customers can visit to browse and purchase products in person. This includes traditional storefronts, but also showrooms, galleries, or design studios in non-traditional spaces (converted townhouses, warehouse showrooms, loft spaces, etc.) — the building type does not matter as long as the space is used for showing and selling products to visitors.
+- Has posted store/showroom/gallery hours, or is available by appointment, or describes itself as open to visitors, clients, or the trade. (Not just "support hours" or "customer service hours" — look for "Store Hours", "Visit Us", "Showroom Hours", "By Appointment", or hours tied to a physical location.)
 
 EXCLUDE if the address matches ANY of these patterns:
 - Office-only locations (especially suites on upper floors like "Suite 400", "Floor 12", "Level 5").
 - Coworking spaces (WeWork, Regus, Industrious, Spaces, or similar shared-office brands appearing in the address or suite name).
-- Residential addresses (apartments, condos, house numbers on residential streets without commercial signage or store hours).
-- Warehouse/distribution-only facilities with no public-facing storefront or posted visitor hours.
+- Residential addresses used purely as a home office with no customer-facing showroom function. BUT NOTE: a townhouse, house, or residential-style building that has been converted into a gallery, showroom, or retail space (with posted hours, "visit us" language, or appointment booking) DOES count. The key question is: can customers visit this address to browse and buy products?
+- Warehouse or distribution-only facilities used purely for storage and fulfillment with no visitor access. BUT NOTE: a warehouse that also functions as a showroom (with visitor hours, appointment scheduling, or language like "visit our showroom") DOES count. Many furniture, art, and design businesses operate showrooms in warehouse spaces.
 - PO Boxes or virtual mailbox services (e.g., addresses containing "PMB", "PO Box", or known virtual-address providers).
 - Addresses that only appear in legal/terms-of-service pages (often just a registered-agent address, not a real store).
 - Third-party retailers, stockists, authorized dealers, or wholesale partners that sell the brand's products but are not owned by the brand (e.g., a "Find a Store" page listing Nordstrom, Target, or local boutiques that carry the brand).
+- Locations found on a parent brand's or sister company's separate website that are not listed on the specific domain provided in the CSV.
 
 When uncertain, look for corroborating signals:
 - Google Maps / Street View imagery showing a storefront with signage.
@@ -174,18 +184,19 @@ Wrap any field containing commas in double quotes. Use standard CSV escaping.
 5. NEVER fabricate addresses or locations. If you cannot find location information, set Has Retail Locations to FALSE and Number of Retail Locations to 0.
 6. NEVER guess product categories. Base eligibility decisions only on products actually listed on the website.
 7. Do NOT use the business name to infer or assume anything about the business. Even if you recognize the brand, all data — product categories, retail locations, eligibility, revenue signals — MUST be sourced from actually visiting the provided website. The business name is only an identifier; the website is the source of truth.
-8. When a website is unreachable, times out, or is behind a paywall, note "Website inaccessible" in the Eligibility Notes column. Allow it to pass Phase 1 (benefit of the doubt) but set Has Retail Locations to "UNKNOWN" in Phase 2. The sales team needs to know which leads require manual follow-up.
+8. SCOPE ALL FINDINGS TO THE PROVIDED DOMAIN. Only count locations, products, and information found on the specific website domain from the CSV. If the site links to a parent brand, sister company, or related entity with its own domain and physical locations, do NOT attribute those locations to the business being evaluated. Each CSV row = one business entity = one domain.
+9. When a website is unreachable, times out, or is behind a paywall, note "Website inaccessible" in the Eligibility Notes column. Allow it to pass Phase 1 (benefit of the doubt) but set Has Retail Locations to "UNKNOWN" in Phase 2. The sales team needs to know which leads require manual follow-up.
 
 ### Retail location validation
-9. ONLY count locations owned and operated by the brand itself. A "Find a Store" or "Where to Buy" page that lists third-party retailers, stockists, authorized dealers, or wholesale partners (e.g., Nordstrom, REI, local boutiques) does NOT mean the brand has its own retail locations. This is the single most common false positive — always verify that a listed location is branded to the company being researched, not to another retailer carrying their products.
-10. Always double-check that posted hours are STORE hours, not customer-support/call-center hours. Support hours (e.g., "Call us Mon–Fri 9–5") are NOT evidence of a retail location.
-11. A "by appointment only" showroom still counts as a retail location if it is a dedicated commercial space where customers can see and purchase products in person.
-12. Pop-up shops or seasonal locations should be noted as such but still count as retail locations if currently active.
-13. If a business has a "store locator" page listing 50+ brand-owned locations, count them but you may note "50+ locations — count may be approximate" rather than listing every address.
+10. ONLY count locations owned and operated by the brand itself. A "Find a Store" or "Where to Buy" page that lists third-party retailers, stockists, authorized dealers, or wholesale partners (e.g., Nordstrom, REI, local boutiques) does NOT mean the brand has its own retail locations. This is the single most common false positive — always verify that a listed location is branded to the company being researched, not to another retailer carrying their products.
+11. Always double-check that posted hours are STORE hours, not customer-support/call-center hours. Support hours (e.g., "Call us Mon–Fri 9–5") are NOT evidence of a retail location.
+12. A "by appointment only" showroom, gallery, or studio still counts as a retail location if customers can visit to see and purchase products in person. The space does not need to be a traditional storefront — converted townhouses, warehouse showrooms, loft galleries, and similar non-traditional spaces all count as long as the business invites customers to visit.
+13. Pop-up shops or seasonal locations should be noted as such but still count as retail locations if currently active.
+14. If a business has a "store locator" page listing 50+ brand-owned locations, count them but you may note "50+ locations — count may be approximate" rather than listing every address.
 
 ### Revenue estimation
-14. For revenue estimation, always show your work in the Revenue Reasoning column so the sales team can evaluate the estimate's basis.
-15. Only estimate revenue for businesses that reached Phase 3 (passed eligibility AND have retail locations). Leave revenue columns blank for all other businesses.
+15. For revenue estimation, always show your work in the Revenue Reasoning column so the sales team can evaluate the estimate's basis.
+16. Only estimate revenue for businesses that reached Phase 3 (passed eligibility AND have retail locations). Leave revenue columns blank for all other businesses.
 </rules>
 
 <examples>
@@ -204,14 +215,29 @@ Phase 2: Website has a "Find a Store" page, but every listed location is a third
 Output row:
 Hydro Flask, hydroflask.com, Yes, —, FALSE, 0, "N/A (store locator lists third-party retailers only — REI, Target, etc.)", , , , Phase 2 — No Retail Locations
 
-### Example 3 — Eliminated in Phase 2 (online-only with office address)
+### Example 3 — Eliminated in Phase 2 (online-only, parent brand has stores but this entity does not)
+Input: "Stickley Virtual Market, stickleyvirtualmarket.com"
+Phase 1: Visit stickleyvirtualmarket.com → products are furniture sold online → ELIGIBLE.
+Phase 2: stickleyvirtualmarket.com is an online-only sales channel. The site links to stickley.com, which is the parent brand with physical showrooms — but those showrooms belong to Stickley, NOT to Stickley Virtual Market. No locations are listed on stickleyvirtualmarket.com itself. → NO RETAIL.
+Output row:
+Stickley Virtual Market, stickleyvirtualmarket.com, Yes, —, FALSE, 0, "N/A (online-only sales channel; parent brand stickley.com has showrooms but they are not listed on this domain)", , , , Phase 2 — No Retail Locations
+
+### Example 4 — Eliminated in Phase 2 (online-only with office address)
 Input: "Notion, notion.so"
 Phase 1: Visit site → product is software/SaaS → ELIGIBLE (not prohibited, though not physical goods).
 Phase 2: Only address is "2300 Harrison St, San Francisco, CA" — corporate office, no storefront, no store hours. → NO RETAIL.
 Output row:
 Notion, notion.so, Yes, —, FALSE, 0, N/A, , , , Phase 2 — No Retail Locations
 
-### Example 4 — Qualified lead (passes all 3 phases)
+### Example 5 — Qualified lead with non-traditional showroom spaces (passes all 3 phases)
+Input: "Rarify, rarify.co"
+Phase 1: Visit rarify.co → products are vintage and contemporary furniture, lighting, and design objects → ELIGIBLE.
+Phase 2: About page and contact page list 2 brand-owned showroom locations: (1) a gallery in a converted Philadelphia townhouse at 735 Bainbridge St, and (2) an 80,000 sqft showroom in a former warehouse in Lebanon, PA. Both are described as spaces where clients can visit to browse the collection. Even though one is in a townhouse and one is in a warehouse, both function as showrooms. → HAS RETAIL, 2 locations.
+Phase 3: Curated furniture avg price $2,000–$15,000+, 12,000+ pieces in inventory, press coverage in Robb Report, 2 showrooms → "$3M–$8M (Low confidence)".
+Output row:
+Rarify, rarify.co, Yes, —, TRUE, 2, "735 Bainbridge St Philadelphia PA; Warehouse showroom Lebanon PA", "$3M–$8M (Low confidence)", "2 showrooms (gallery + warehouse), curated vintage/contemporary furniture avg $2K–$15K+, 12K+ inventory pieces, press coverage in Robb Report and ICFF", 2, Phase 3 — Qualified Lead
+
+### Example 6 — Qualified lead with traditional storefronts (passes all 3 phases)
 Input: "Allbirds, allbirds.com"
 Phase 1: Visit site → products are sustainable footwear and apparel ($100–$160) → ELIGIBLE.
 Phase 2: allbirds.com/pages/stores lists 40+ brand-owned stores with the Allbirds name, ground-level storefronts, posted store hours → HAS RETAIL, 42 locations.
@@ -237,15 +263,17 @@ Phase 1 result: [ELIGIBLE / INELIGIBLE / REVIEW NEEDED]
 Phase 2 thinking (only for businesses that passed Phase 1):
 <thinking_phase2>
 Business: [name]
-Pages checked for locations: [list pages visited]
-Addresses found: [list raw addresses]
+Domain being evaluated: [exact domain from CSV]
+Pages checked for locations: [list pages visited — include About, Contact, FAQ, footer]
+Did the site link to a parent/sister brand with a different domain? [yes/no — if yes, do NOT count that other domain's locations]
+Addresses found on THIS domain: [list raw addresses]
 Brand-owned vs. third-party check:
   - Is the "store locator" listing brand-owned stores or third-party stockists/retailers? [reasoning]
   - If mixed, which are brand-owned? [list]
 Address validation (brand-owned locations only):
-  - [address 1]: [retail/office/residential/warehouse] — [reasoning]
-  - [address 2]: [retail/office/residential/warehouse] — [reasoning]
-Store hours found: [yes/no, and where — store hours vs. support hours?]
+  - [address 1]: [showroom/gallery/store/office/residential/warehouse] — [can customers visit to browse and buy? reasoning]
+  - [address 2]: [showroom/gallery/store/office/residential/warehouse] — [can customers visit to browse and buy? reasoning]
+Store/showroom hours or appointment info found: [yes/no, and where — store hours vs. support hours?]
 Phase 2 result: [HAS RETAIL (count: X) / NO RETAIL]
 </thinking_phase2>
 
